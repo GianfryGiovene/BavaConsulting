@@ -29,4 +29,11 @@ public sealed class Post : EntityBase<PostId>
         var post = new Post(new PostId(Guid.NewGuid()), userId, title, content, categories);
         return post;
     }
+
+    public void CreateComment(UserId userId, string content)
+    {
+        var comment = Comment.Create(userId, this.Id, content);
+
+        Comments.Add(comment);
+    }
 }

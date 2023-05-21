@@ -17,7 +17,6 @@ public sealed class MapperProfile : Profile
             .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
             .ForMember(dest => dest.FiscalCode, opt => opt.MapFrom(src => src.FiscalCode))
-            .ReverseMap();
-            
+            .ReverseMap();            
     }
 }
