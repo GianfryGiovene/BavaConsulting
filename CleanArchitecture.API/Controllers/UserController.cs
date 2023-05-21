@@ -18,6 +18,7 @@ namespace CleanArchitecture.API.Controllers;
 public class UserController : ControllerBase
 {
     private readonly ISender _sender;
+    private ApiResponse _response;
     private HttpStatusCode statusCode;
 
     public UserController(ISender sender)
@@ -28,7 +29,7 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ApiResponse>> CreateUserAsync([FromBody]UserCreateVM request)
     {
-        ApiResponse response;
+        
         try
         {
             
@@ -51,10 +52,10 @@ public class UserController : ControllerBase
 
             statusCode = HttpStatusCode.Created;
 
-            response = ApiResponse.Create("Utente registrato", statusCode, true, null);
+            _response = ApiResponse.Create("Utente registrato", statusCode, true, null);
 
 
-            return CreatedAtRoute("GetUserById", new { id = user.Id }, user);
+            return CreatedAtRoute("get-user-by-id", new { id = user.Id }, user);
 
 
         }
@@ -63,8 +64,8 @@ public class UserController : ControllerBase
             
             statusCode = HttpStatusCode.BadRequest;
 
-            response = ApiResponse.Create("Allerta.", statusCode, false, new List<string> { ex.ToString() });
-            return BadRequest(response);
+            _response = ApiResponse.Create("Allerta.", statusCode, false, new List<string> { ex.ToString() });
+            return BadRequest(_response);
         }
     }
 
@@ -103,7 +104,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpGet("{id}", Name = "GetUserById")]
+    [HttpGet("{id}", Name = "get-by-id")]
     public async Task<ActionResult<UserReadVM>> GetUserById([FromQuery]UserId id)
     {
         try

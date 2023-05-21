@@ -21,7 +21,7 @@ public abstract class Repository<T> : IRepository<T> where T : class
         await dbSet.AddAsync(entity);
     }
 
-    public async Task<bool> AnyAsync(Expression<Func<T, bool>> filter, bool tracked = false)
+    public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> filter, bool tracked = false)
     {
         if (filter is null) throw new NullReferenceException("filtro non può essere null");
         IQueryable<T> query = this.dbSet;
@@ -34,7 +34,7 @@ public abstract class Repository<T> : IRepository<T> where T : class
         return await query.AnyAsync(filter);
     }   
     // x => x.Id == filter
-    public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, bool tracked = false)
+    public virtual async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, bool tracked = false)
     {
         IQueryable<T> query = this.dbSet;
         if(!tracked)
@@ -49,7 +49,7 @@ public abstract class Repository<T> : IRepository<T> where T : class
         return await query.ToListAsync();
     }
 
-    public async Task<T> GetAsync(Expression<Func<T, bool>> filter, bool tracked = false)
+    public virtual async Task<T> GetAsync(Expression<Func<T, bool>> filter, bool tracked = false)
     {
         if (filter is null) throw new NullReferenceException("filtro non può essere null");
         IQueryable <T> query = this.dbSet;
@@ -63,7 +63,7 @@ public abstract class Repository<T> : IRepository<T> where T : class
         
     }
 
-    public void Remove(T entity)
+    public virtual void Remove(T entity)
     {
         if (entity is null) throw new NullReferenceException("Oggetto non trovato");
         dbSet.Remove(entity);

@@ -5,8 +5,10 @@ namespace CleanArchitecture.Domain.Entities.Blog;
 
 public sealed class Comment : EntityBase<CommentId>
 {
-    private Comment(UserId userId, PostId postId, string content)
+    public Comment() { }
+    private Comment(CommentId id, UserId userId, PostId postId, string content)
     {
+        Id = id;
         UserId = userId;
         PostId = postId;
         Content = content;
@@ -16,12 +18,12 @@ public sealed class Comment : EntityBase<CommentId>
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public int Like { get; set; } = 0;
     public int Unlike { get; set; } = 0;
-    public UserId UserId { get; set; }
+    public UserId? UserId { get; set; }
     public PostId PostId { get; set; }
 
     public static Comment Create(UserId userId, PostId postId, string content)
     {
-        var comment = new Comment(userId,postId, content);
+        var comment = new Comment(new CommentId(Guid.NewGuid()), userId,postId, content);
         return comment;
     }
 }

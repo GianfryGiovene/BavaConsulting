@@ -1,4 +1,5 @@
-﻿using CleanArchitecture.Domain.Enums;
+﻿using CleanArchitecture.Domain.Entities.Blog;
+using CleanArchitecture.Domain.Enums;
 using CleanArchitecture.Domain.Generics;
 using CleanArchitecture.Domain.Utilities;
 
@@ -37,6 +38,9 @@ public sealed class User : EntityBase<UserId>
     public DateTime BirthDay { get; set; }
     public DateTime CreatedAd { get; init; }
     public Role Role { get; set; }
+    public List<Post> Posts { get; set; } = new List<Post>();
+    public List<Comment> Comments { get; set; } = new List<Comment>();
+    public bool MailVerified { get; set; } = false;
 
     public static User Create(string email,
         string password,

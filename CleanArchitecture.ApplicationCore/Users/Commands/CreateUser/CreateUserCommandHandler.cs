@@ -24,12 +24,10 @@ public sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand
             ,request.LastName
             ,request.BirthDay);
 
-        using(var linkedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
-        {
-            await _unitOfWork.UserRepository.CreateAsync(user);
+        await _unitOfWork.UserRepository.CreateAsync(user);
 
-            await _unitOfWork.CommitAsync();
-        }
+        await _unitOfWork.CommitAsync();
+        
 
         return user;
     }
