@@ -15,27 +15,35 @@ public sealed class CreatePostCommandHandler : IRequestHandler<CreatePostCommand
 
     public async Task<Post> Handle(CreatePostCommand request, CancellationToken cancellationToken)
     {
-        if (request is null) throw new NullReferenceException();
-
-        List<Category> categories = new List<Category>();
-        if(request.Categories is not null)
+        try
         {
-            foreach (var catId in request.Categories) 
+            if (request is null) throw new NullReferenceException();
+
+            List<Category> categories = new List<Category>();
+            if (request.Categories is not null)
             {
-                var category = await _unitOfWork.CategoryRepository.GetAsync(c => c.Id == catId, true);
-                if(category is not null)
+                foreach (var catId in request.Categories)
                 {
-                    categories.Add(category);
+                    var category = await _unitOfWork.CategoryRepository.GetAsync(c => c.Id == catId, true);
+                    if (category is not null)
+                    {
+                        categories.Add(category);
+                    }
                 }
             }
+
+            var post = Post.Create(request.UserId, request.Title, request.Content, categories);
+
+            await _unitOfWork.PostRepository.CreateAsync(post);
+
+            await _unitOfWork.CommitAsync();
+
+            return post;
         }
-
-        var post = Post.Create(request.UserId, request.Title,request.Content, categories);
-
-        await _unitOfWork.PostRepository.CreateAsync(post);
-
-        await _unitOfWork.CommitAsync();
-
-        return post;
+        catch
+        {
+            _unitOfWork.Dispose();
+            throw new Exception();
+        }
     }
 }

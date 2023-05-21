@@ -16,14 +16,22 @@ public sealed class CreateCategoryCommandHandler : IRequestHandler<CreateCategor
 
     public async Task<Category> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
-        if (request is null) throw new NullReferenceException();
+        try
+        {
+            if (request is null) throw new NullReferenceException();
 
-        var category = Category.Create(request.name, request.description);
+            var category = Category.Create(request.name, request.description);
 
-        await _unitOfWork.CategoryRepository.CreateAsync(category);
+            await _unitOfWork.CategoryRepository.CreateAsync(category);
 
-        await _unitOfWork.CommitAsync();        
+            await _unitOfWork.CommitAsync();
 
-        return category;
+            return category;
+        }
+        catch
+        {
+            _unitOfWork.Dispose();
+            throw new Exception();
+        }
     }
 }

@@ -16,14 +16,22 @@ public sealed class CreateUserCommandHandler : IRequestHandler<CreateCommentComm
 
     public async Task<Comment> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
     {
-        if (request is null) throw new NullReferenceException();
+        try
+        {
+            if (request is null) throw new NullReferenceException();
 
-        var comment = Comment.Create(request.UserId,request.PostId,request.Content);
+            var comment = Comment.Create(request.UserId, request.PostId, request.Content);
 
-        await _unitOfWork.CommentRepository.CreateAsync(comment);
+            await _unitOfWork.CommentRepository.CreateAsync(comment);
 
-        await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitAsync();
 
-        return comment;
+            return comment;
+        }
+        catch
+        {
+            _unitOfWork.Dispose();
+            throw new Exception();
+        }
     }
 }

@@ -15,20 +15,26 @@ public sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand
 
     public async Task<User> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        if (request is null) throw new NullReferenceException();
+        try
+        {
+            if (request is null) throw new NullReferenceException();
 
-        var user = User.Create(request.Email
-            ,request.Password
-            ,request.FiscalCode
-            ,request.FirstName
-            ,request.LastName
-            ,request.BirthDay);
+            var user = User.Create(request.Email
+                , request.Password
+                , request.FiscalCode
+                , request.FirstName
+                , request.LastName
+                , request.BirthDay);
 
-        await _unitOfWork.UserRepository.CreateAsync(user);
+            await _unitOfWork.UserRepository.CreateAsync(user);
 
-        await _unitOfWork.CommitAsync();
-        
-
-        return user;
+            await _unitOfWork.CommitAsync();
+            return user;
+        }
+        catch
+        {
+            _unitOfWork.Dispose();
+            throw new Exception();
+        }        
     }
 }
