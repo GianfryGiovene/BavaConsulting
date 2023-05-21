@@ -1,23 +1,21 @@
-﻿using CleanArchitecture.ApplicationCore.Abstractions;
-using CleanArchitecture.ApplicationCore.Categories.Commands.CreateCategory;
-using CleanArchitecture.ApplicationCore.Posts.Commands.CreatePost;
+﻿using CleanArchitecture.ApplicationCore.Posts.Commands.CreatePost;
 using CleanArchitecture.ApplicationCore.Posts.Queries.GetAll;
 using CleanArchitecture.ApplicationCore.Posts.Queries.GetById;
-using CleanArchitecture.ApplicationCore.Users.Queries.GetAll;
-using CleanArchitecture.ApplicationCore.Users.Queries.GetById;
 using CleanArchitecture.Domain.Entities.Blog;
 using CleanArchitecture.Domain.Entities.Users;
 using CleanArchitecture.Domain.Models.Posts;
-using CleanArchitecture.Domain.Models.User;
 using CleanArchitecture.Domain.Shared;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace CleanArchitecture.API.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/[controller]"), Authorize]
 [ApiController]
+[EnableCors("MyAllowAllOrigins")]
 public class PostController : ControllerBase
 {
     private readonly ISender _sender;
@@ -30,6 +28,9 @@ public class PostController : ControllerBase
     }
 
     [HttpPost]
+    [EnableCors()]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse>> CreateAsync(PostInserVM request)
     {
         try
@@ -56,6 +57,9 @@ public class PostController : ControllerBase
     }
 
     [HttpGet("get-all")]
+    [EnableCors()]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse>> GetAllAsync(string? filter)
     {
         IEnumerable<PostReadVM> posts;
@@ -73,6 +77,9 @@ public class PostController : ControllerBase
     }
 
     [HttpGet("{id}", Name = "get-post-by-id")]
+    [EnableCors()]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse>> GetByIdAsync(PostId id)
     {
         try

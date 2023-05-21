@@ -10,6 +10,8 @@ using CleanArchitecture.Domain.Models.Category;
 using CleanArchitecture.Domain.Models.User;
 using CleanArchitecture.Domain.Shared;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -18,6 +20,7 @@ namespace CleanArchitecture.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[EnableCors("MyAllowAllOrigins")]
 public class CategoryController : ControllerBase
 {
     private readonly ISender _sender;
@@ -29,7 +32,10 @@ public class CategoryController : ControllerBase
         _sender = sender;
     }
 
-    [HttpPost]
+    [HttpPost, Authorize(Roles = "ADMIN")]
+    [EnableCors()]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse>> CreateCategoryAsync(CategoryInsertVM request)
     {
         try
@@ -58,6 +64,9 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet("get-all")]
+    [EnableCors()]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse>> GetAllAsync(string? filter)
     {
         IEnumerable<CategoryReadVM> categories;
@@ -77,6 +86,10 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet("{id}", Name = "get-category-by-id")]
+    [EnableCors()]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse>> GetById(CategoryId id)
     {
         try

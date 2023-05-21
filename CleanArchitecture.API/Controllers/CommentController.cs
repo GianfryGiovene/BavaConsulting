@@ -2,13 +2,16 @@
 using CleanArchitecture.Domain.Models.Comments;
 using CleanArchitecture.Domain.Shared;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace CleanArchitecture.API.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/[controller]"), Authorize]
 [ApiController]
+[EnableCors("MyAllowAllOrigins")]
 public class CommentController : ControllerBase
 {
     private readonly ISender _sender;
@@ -21,6 +24,9 @@ public class CommentController : ControllerBase
     }
 
     [HttpPost]
+    [EnableCors()]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse>> CreateAsync(CommentInsertVM request)
     {
         try

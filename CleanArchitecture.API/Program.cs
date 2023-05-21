@@ -1,3 +1,4 @@
+using CleanArchitecture.API.Controllers;
 using CleanArchitecture.ApplicationCore;
 using CleanArchitecture.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -69,18 +70,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
-
-//app.UseStaticFiles();
-//app.UseRouting();
-
-
-//app.MapControllerRoute(
-//    name: "default",
-//    pattern: "{controller}/{action=Index}/{id?}");
-
-//app.MapFallbackToFile("index.html");
-
+//per utilizzare un controller di gestione eccezioni
+app.UseExceptionHandler(options =>
+{
+    options.Run(async context =>
+    {
+        await ExceptionController.HandleExceptions(context);
+    });
+});
 
 app.UseHttpsRedirection();
 

@@ -5,7 +5,7 @@ namespace CleanArchitecture.Domain.Shared;
 public class ApiResponse
 {
 
-    private ApiResponse(object value,HttpStatusCode statusCode,bool isSuccess, List<string>? errorMessages )
+    private ApiResponse(object? value,HttpStatusCode statusCode,bool isSuccess, List<string>? errorMessages )
     {
         Value = value;
         StatusCode = statusCode;

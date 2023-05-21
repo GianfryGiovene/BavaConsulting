@@ -1,5 +1,6 @@
 ﻿using CleanArchitecture.ApplicationCore.Abstractions;
 using CleanArchitecture.Domain.Entities.Users;
+using CleanArchitecture.Domain.Exceptions;
 using MediatR;
 
 namespace CleanArchitecture.ApplicationCore.Users.Commands.CreateUser;
@@ -17,8 +18,7 @@ public sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand
     {
         try
         {
-            if (request is null) throw new NullReferenceException();
-
+            if (await _unitOfWork.UserRepository.AnyAsync(u => u.Email.Equals(request.Email.ToLower()))) throw new EntityAlreadyExistsException("Email già registrata.");
             var user = User.Create(request.Email
                 , request.Password
                 , request.FiscalCode

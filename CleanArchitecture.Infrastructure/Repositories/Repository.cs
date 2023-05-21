@@ -18,7 +18,7 @@ public abstract class Repository<T> : IRepository<T> where T : class
 
     public async Task CreateAsync(T entity)
     {
-        await dbSet.AddAsync(entity);
+        await dbSet.AddAsync(entity).ConfigureAwait(false);
     }
 
     public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> filter, bool tracked = false)
@@ -31,7 +31,7 @@ public abstract class Repository<T> : IRepository<T> where T : class
             query = query.AsNoTracking();
         }
 
-        return await query.AnyAsync(filter);
+        return await query.AnyAsync(filter).ConfigureAwait(false);
     }   
     // x => x.Id == filter
     public virtual async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, bool tracked = false)
@@ -46,7 +46,7 @@ public abstract class Repository<T> : IRepository<T> where T : class
             query = query.Where(filter);
         }
 
-        return await query.ToListAsync();
+        return await query.ToListAsync().ConfigureAwait(false);
     }
 
     public virtual async Task<T> GetAsync(Expression<Func<T, bool>> filter, bool tracked = false)
@@ -59,7 +59,7 @@ public abstract class Repository<T> : IRepository<T> where T : class
             query = query.AsNoTracking();
         }
         
-        return await query.SingleAsync(filter);
+        return await query.SingleAsync(filter).ConfigureAwait(false);
         
     }
 
